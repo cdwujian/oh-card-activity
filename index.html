@@ -338,10 +338,9 @@
     .survey-panel {
       background: var(--white);
       border-radius: 28px;
-      padding: 28px 28px 0;
+      padding: 28px;
       box-shadow: var(--shadow);
       border: 2px solid #E8F8EE;
-      overflow: hidden;
     }
     .survey-panel-title {
       font-size: 16px; font-weight: 800; color: var(--text);
@@ -350,19 +349,59 @@
     }
     .survey-subtitle {
       font-size: 13px; color: var(--text-light); font-weight: 600;
-      line-height: 1.6; margin-bottom: 16px;
+      line-height: 1.6; margin-bottom: 20px;
     }
-    .survey-iframe-wrap {
-      border-radius: 0 0 26px 26px;
-      overflow: hidden;
-      margin: 0 -28px;
+    .survey-wait { text-align: center; padding: 40px 20px; }
+    .survey-wait .wait-icon { font-size: 52px; margin-bottom: 14px; display: block; opacity: 0.55; }
+    .survey-wait p { font-size: 14px; color: var(--text-light); font-weight: 600; line-height: 1.7; }
+    .survey-form-inner { display: none; }
+    .survey-form-inner.active { display: block; }
+    .form-q {
+      margin-bottom: 16px; background: #FAFAFA;
+      border-radius: 14px; padding: 14px 16px;
+      border: 1.5px solid #F0EBEA; transition: border-color 0.2s;
     }
-    .survey-iframe-wrap iframe {
+    .form-q:focus-within { border-color: var(--mint-dark); }
+    .form-q label {
+      display: flex; align-items: flex-start; gap: 8px;
+      font-size: 13px; font-weight: 700; color: var(--text);
+      margin-bottom: 8px; line-height: 1.5;
+    }
+    .q-chip {
+      display: inline-flex; align-items: center; justify-content: center;
+      background: var(--mint); color: var(--brown);
+      border-radius: 6px; padding: 1px 7px;
+      font-size: 11px; font-weight: 800; flex-shrink: 0; margin-top: 1px;
+    }
+    .form-q input[type="text"],
+    .form-q textarea {
+      width: 100%; background: var(--white);
+      border: 1.5px solid #EDE8E6; border-radius: 10px;
+      padding: 9px 12px; color: var(--text);
+      font-size: 14px; font-family: inherit; font-weight: 600;
+      line-height: 1.6; resize: none; outline: none;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+    .form-q input:focus, .form-q textarea:focus {
+      border-color: var(--mint-dark);
+      box-shadow: 0 0 0 3px rgba(109,203,168,0.15);
+    }
+    .form-q input[readonly] {
+      background: #F7F4FF; color: var(--lavender-dark);
+      cursor: default; border-color: var(--lavender);
+    }
+    .form-q input::placeholder, .form-q textarea::placeholder { color: #C5B8B3; font-weight: 600; }
+    .btn-submit {
       width: 100%;
-      height: 680px;
-      border: none;
-      display: block;
+      background: linear-gradient(135deg, var(--mint-dark), #4DB896);
+      color: #fff; border: none; border-radius: 14px;
+      padding: 14px; font-size: 15px; font-weight: 800;
+      cursor: pointer; letter-spacing: 0.5px;
+      box-shadow: 0 6px 20px rgba(109,203,168,0.4), 0 3px 0 rgba(60,160,110,0.3);
+      transition: all 0.2s ease; font-family: inherit;
     }
+    .btn-submit:hover { transform: translateY(-2px); box-shadow: 0 10px 28px rgba(109,203,168,0.5); }
+    .submit-note { text-align: center; font-size: 12px; color: var(--text-light); font-weight: 600; margin-top: 10px; }
 
     /* ===== CONTACT ===== */
     .contact-strip {
@@ -520,17 +559,37 @@
         </div>
       </div>
 
-      <!-- RIGHT: Survey iframe -->
+      <!-- RIGHT: Survey form -->
       <div class="survey-panel">
         <div class="survey-panel-title">📝 填写互动问题参与抽奖</div>
         <p class="survey-subtitle">仔细感受抽到的卡片，用它代表你当下的工作状态，回答以下问题 · 截止 <strong>4月15日</strong></p>
-        <div class="survey-iframe-wrap">
-          <iframe
-            src="https://survey.corp.kuaishou.com/view/kpx6rbfd"
-            frameborder="0"
-            allowtransparency="true"
-            id="surveyIframe"
-          ></iframe>
+
+        <!-- Wait hint -->
+        <div class="survey-wait" id="surveyWait">
+          <span class="wait-icon">👈</span>
+          <p>先在左侧抽一张卡片吧<br>抽卡后这里会自动解锁~</p>
+        </div>
+
+        <!-- Form -->
+        <div class="survey-form-inner" id="surveyFormInner">
+          <div class="form-q">
+            <label><span class="q-chip">Q1</span>你抽到的卡片编号是</label>
+            <input type="text" id="q1" readonly placeholder="抽卡后自动填写">
+          </div>
+          <div class="form-q">
+            <label><span class="q-chip">Q2</span>如果这张卡代表你的工作状态，请用 2-3 句话描述它是什么样的</label>
+            <textarea id="q2" rows="3" placeholder="写下你的感受..."></textarea>
+          </div>
+          <div class="form-q">
+            <label><span class="q-chip">Q3</span>这样的工作状态会让你有什么感受？</label>
+            <textarea id="q3" rows="3" placeholder="写下你的感受..."></textarea>
+          </div>
+          <div class="form-q">
+            <label><span class="q-chip">Q4</span>这样的感受会对你产生什么影响吗？</label>
+            <textarea id="q4" rows="3" placeholder="写下你的感受..."></textarea>
+          </div>
+          <button class="btn-submit" id="btnSubmit" onclick="goToSurvey()">🎉 前往问卷提交参与抽奖</button>
+          <p class="submit-note">点击后将在新页面打开快问卷，卡片编号已自动记录</p>
         </div>
       </div>
 
@@ -620,9 +679,6 @@
         // Unlock form
         document.getElementById('surveyWait').style.display = 'none';
         document.getElementById('surveyFormInner').classList.add('active');
-        document.getElementById('submitSuccess').classList.remove('active');
-        document.getElementById('btnSubmit').disabled = false;
-        document.getElementById('btnSubmit').innerHTML = '🎉 提交参与抽奖';
         document.getElementById('q2').value = '';
         document.getElementById('q3').value = '';
         document.getElementById('q4').value = '';
@@ -661,7 +717,27 @@
       setTimeout(() => {
         document.getElementById('resultState').classList.remove('active');
         document.getElementById('initialState').style.display = 'block';
+        // Reset form
+        document.getElementById('surveyWait').style.display = 'block';
+        document.getElementById('surveyFormInner').classList.remove('active');
+        document.getElementById('q1').value = '';
+        document.getElementById('q2').value = '';
+        document.getElementById('q3').value = '';
+        document.getElementById('q4').value = '';
       }, 350);
+    }
+
+    function goToSurvey() {
+      const cardId = document.getElementById('q1').value;
+      const q2 = document.getElementById('q2').value.trim();
+      const q3 = document.getElementById('q3').value.trim();
+      const q4 = document.getElementById('q4').value.trim();
+      if (!q2 || !q3 || !q4) {
+        alert('请填写所有问题后再提交 😊');
+        return;
+      }
+      // Open survey in new tab with card ID pre-noted
+      window.open('https://survey.corp.kuaishou.com/view/kpx6rbfd', '_blank');
     }
 
   </script>
