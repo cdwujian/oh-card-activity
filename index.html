@@ -274,7 +274,7 @@
 
       <!-- Result -->
       <div class="result-state" id="resultState">
-        <div><span class="card-id-badge">🏷 <span id="cardNumber">OH-001</span></span></div>
+        <div><span class="card-id-badge">你抽到的卡片编号为：<span id="cardNumber">1</span></span></div>
         <div class="card-flip-wrap">
           <div class="card-flip-inner" id="cardFlipInner">
             <div class="card-face card-back">
@@ -337,7 +337,7 @@
       const card = ohCards[Math.floor(Math.random() * ohCards.length)];
 
       setTimeout(() => {
-        document.getElementById('cardNumber').textContent = card.id;
+        document.getElementById('cardNumber').textContent = parseInt(card.id.replace('OH-', ''));
 
         const cardFront = document.getElementById('cardFront');
         cardFront.innerHTML = '<div class="card-loading">加载中...</div>';
