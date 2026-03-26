@@ -599,7 +599,9 @@
           <p class="survey-subtitle">截止 <strong>4月15日</strong> · 填写后点提交参与抽奖</p>
           <div class="card-note" id="cardNoteIntranet"></div>
           <div class="survey-iframe-wrap">
-            <iframe id="surveyIframe" frameborder="0" allowtransparency="true"></iframe>
+            <iframe id="surveyIframe" frameborder="0" allowtransparency="true"
+              sandbox="allow-forms allow-scripts allow-same-origin allow-popups"
+              referrerpolicy="no-referrer"></iframe>
           </div>
         </div>
 
@@ -745,25 +747,26 @@
       if (map[state]) document.getElementById(map[state]).classList.add('active');
     }
 
-    async function checkIntranetAndShowSurvey(cardId) {
+    function checkIntranetAndShowSurvey(cardId) {
       const surveyUrl = 'https://survey.corp.kuaishou.com/view/kpx6rbfd';
-      try {
-        // Try fetching survey page with a short timeout
-        const controller = new AbortController();
-        const timer = setTimeout(() => controller.abort(), 4000);
-        const res = await fetch(surveyUrl, {
-          method: 'HEAD',
-          mode: 'no-cors',
-          credentials: 'include',
-          signal: controller.signal
-        });
-        clearTimeout(timer);
-        // no-cors always returns opaque response if reachable
-        showIntranetSurvey(cardId, surveyUrl);
-      } catch (e) {
-        // Timeout or network error = no intranet
-        showNoIntranet(cardId, surveyUrl);
-      }
+      // Use Image ping to detect intranet: if server responds (any response = reachable)
+      let resolved = false;
+      const probe = new Image();
+      const timeout = setTimeout(() => {
+        if (!resolved) {
+          resolved = true;
+          showNoIntranet(cardId, surveyUrl);
+        }
+      }, 4000);
+      probe.onload = probe.onerror = () => {
+        if (!resolved) {
+          resolved = true;
+          clearTimeout(timeout);
+          showIntranetSurvey(cardId, surveyUrl);
+        }
+      };
+      // Probe a small asset on the intranet domain
+      probe.src = 'https://survey.corp.kuaishou.com/favicon.ico?_=' + Date.now();
     }
 
     function showIntranetSurvey(cardId, surveyUrl) {
