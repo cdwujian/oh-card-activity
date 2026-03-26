@@ -157,13 +157,20 @@
     .result-state { display: none; }
     .result-state.active { display: block; }
 
-    .card-id-badge {
-      display: inline-flex; align-items: center; gap: 6px;
-      background: var(--yellow); color: var(--brown);
-      border-radius: 20px; padding: 4px 16px;
-      font-size: 13px; font-weight: 800;
+    .card-id-display {
+      display: flex; flex-direction: column; align-items: center; gap: 4px;
       margin-bottom: 20px;
-      box-shadow: 0 2px 0 rgba(107,78,61,0.12);
+    }
+    .card-id-label {
+      font-size: 12px; font-weight: 700; color: var(--text-light);
+      letter-spacing: 0.5px;
+    }
+    .card-id-number {
+      font-size: 64px; font-weight: 900; line-height: 1;
+      background: linear-gradient(135deg, var(--coral), var(--lavender-dark));
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      background-clip: text;
+      filter: drop-shadow(0 2px 8px rgba(255,140,105,0.3));
     }
 
     /* Card flip */
@@ -274,7 +281,10 @@
 
       <!-- Result -->
       <div class="result-state" id="resultState">
-        <div><span class="card-id-badge">你抽到的卡片编号为：<span id="cardNumber">1</span></span></div>
+        <div class="card-id-display">
+          <span class="card-id-label">你抽到的卡片编号为</span>
+          <span class="card-id-number" id="cardNumber">1</span>
+        </div>
         <div class="card-flip-wrap">
           <div class="card-flip-inner" id="cardFlipInner">
             <div class="card-face card-back">
