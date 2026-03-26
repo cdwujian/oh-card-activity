@@ -1,0 +1,853 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>心灵卡片的奇幻漂流</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap');
+
+    :root {
+      --cream: #FFF8F0;
+      --peach: #FFD6B8;
+      --coral: #FF8C69;
+      --mint: #B8EDD6;
+      --mint-dark: #6DCBA8;
+      --lavender: #D4C5F9;
+      --lavender-dark: #9B85E8;
+      --sky: #BDE8FF;
+      --yellow: #FFE566;
+      --brown: #6B4E3D;
+      --text: #4A3728;
+      --text-light: #8B7066;
+      --white: #FFFFFF;
+      --shadow: 0 8px 32px rgba(107,78,61,0.12);
+      --shadow-sm: 0 4px 16px rgba(107,78,61,0.08);
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      min-height: 100vh;
+      background-color: var(--cream);
+      background-image:
+        radial-gradient(circle at 10% 20%, rgba(255,214,184,0.5) 0%, transparent 40%),
+        radial-gradient(circle at 90% 80%, rgba(212,197,249,0.4) 0%, transparent 40%),
+        radial-gradient(circle at 50% 50%, rgba(184,237,214,0.3) 0%, transparent 60%);
+      font-family: 'Nunito', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+      color: var(--text);
+      overflow-x: hidden;
+    }
+
+    /* Decorative floaties */
+    .floaties {
+      position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+      pointer-events: none; z-index: 0; overflow: hidden;
+    }
+    .floaty {
+      position: absolute;
+      border-radius: 50%;
+      opacity: 0.25;
+      animation: floatUp linear infinite;
+    }
+    @keyframes floatUp {
+      0% { transform: translateY(110vh) rotate(0deg); }
+      100% { transform: translateY(-120px) rotate(360deg); }
+    }
+
+    /* Stars decoration */
+    .deco-star {
+      position: fixed;
+      pointer-events: none;
+      font-size: 20px;
+      opacity: 0.18;
+      animation: twinkle 3s ease-in-out infinite;
+    }
+    @keyframes twinkle {
+      0%, 100% { opacity: 0.18; transform: scale(1) rotate(0deg); }
+      50% { opacity: 0.35; transform: scale(1.2) rotate(15deg); }
+    }
+
+    /* ===== LAYOUT ===== */
+    .page-wrap {
+      position: relative;
+      z-index: 1;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 40px 24px 60px;
+    }
+
+    /* ===== HEADER ===== */
+    .header {
+      text-align: center;
+      margin-bottom: 36px;
+      position: relative;
+    }
+    .header-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: var(--yellow);
+      color: var(--brown);
+      border-radius: 20px;
+      padding: 6px 16px;
+      font-size: 13px;
+      font-weight: 800;
+      letter-spacing: 1px;
+      margin-bottom: 14px;
+      box-shadow: 0 3px 0 rgba(107,78,61,0.15);
+    }
+    .header h1 {
+      font-size: 42px;
+      font-weight: 900;
+      color: var(--text);
+      line-height: 1.2;
+      margin-bottom: 10px;
+      letter-spacing: -0.5px;
+    }
+    .header h1 span {
+      background: linear-gradient(135deg, var(--coral), var(--lavender-dark));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .header .sub {
+      font-size: 16px;
+      color: var(--text-light);
+      font-weight: 600;
+    }
+
+    /* Wavy divider */
+    .wavy { margin: 20px auto; display: block; width: 120px; }
+
+    /* ===== RULES BANNER ===== */
+    .rules-banner {
+      background: var(--white);
+      border-radius: 24px;
+      padding: 22px 28px;
+      margin-bottom: 28px;
+      box-shadow: var(--shadow-sm);
+      border: 2px solid var(--peach);
+    }
+    .rules-flow-title {
+      font-size: 15px; font-weight: 800; color: var(--text);
+      margin-bottom: 18px;
+    }
+    .rules-flow {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+    .flow-step {
+      display: flex; flex-direction: column; align-items: center;
+      text-align: center; flex: 1; min-width: 120px; max-width: 180px;
+    }
+    .flow-icon {
+      width: 56px; height: 56px; border-radius: 18px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 26px; margin-bottom: 8px;
+      box-shadow: 0 4px 12px rgba(107,78,61,0.12);
+    }
+    .flow-num {
+      font-size: 10px; font-weight: 800; color: var(--text-light);
+      letter-spacing: 1.5px; margin-bottom: 4px;
+    }
+    .flow-label {
+      font-size: 14px; font-weight: 800; color: var(--text);
+      margin-bottom: 4px;
+    }
+    .flow-desc {
+      font-size: 12px; color: var(--text-light); font-weight: 600;
+      line-height: 1.6;
+    }
+    .flow-arrow {
+      font-size: 22px; color: var(--peach); font-weight: 900;
+      flex-shrink: 0; margin-top: -16px;
+    }
+    @media (max-width: 540px) {
+      .flow-arrow { transform: rotate(90deg); margin: 0; }
+      .rules-flow { flex-direction: column; }
+      .flow-step { max-width: 100%; }
+    }
+
+    /* ===== MAIN CONTENT: 2-col layout ===== */
+    .main-content {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+      align-items: start;
+    }
+
+    /* ===== CARD PANEL (left) ===== */
+    .card-panel {
+      background: var(--white);
+      border-radius: 28px;
+      padding: 32px 28px;
+      box-shadow: var(--shadow);
+      border: 2px solid #F0E8FF;
+      position: sticky;
+      top: 24px;
+    }
+    .card-panel-title {
+      font-size: 16px; font-weight: 800; color: var(--text);
+      margin-bottom: 24px; text-align: center;
+    }
+
+    /* Initial state */
+    .initial-state { text-align: center; padding: 20px 0; }
+    .deck-visual {
+      position: relative; width: 160px; height: 220px;
+      margin: 0 auto 24px;
+    }
+    .deck-card {
+      position: absolute;
+      width: 140px; height: 200px;
+      border-radius: 16px;
+      background: linear-gradient(145deg, var(--lavender), #C8B8F8);
+      box-shadow: 0 6px 24px rgba(155,133,232,0.3);
+      border: 2px solid rgba(255,255,255,0.8);
+    }
+    .deck-card:nth-child(1) { transform: rotate(-6deg) translate(-5px, 5px); opacity: 0.5; background: linear-gradient(145deg, var(--mint), var(--mint-dark)); }
+    .deck-card:nth-child(2) { transform: rotate(-3deg) translate(-2px, 2px); opacity: 0.7; background: linear-gradient(145deg, var(--sky), #7DD3F8); }
+    .deck-card:nth-child(3) {
+      transform: rotate(0deg);
+      background: linear-gradient(145deg, var(--lavender), #C8B8F8);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 40px;
+      animation: gentlePulse 2.5s ease-in-out infinite;
+    }
+    @keyframes gentlePulse {
+      0%, 100% { transform: rotate(0deg) scale(1); }
+      50% { transform: rotate(0deg) scale(1.03); }
+    }
+    .initial-state p {
+      font-size: 14px; color: var(--text-light); line-height: 1.7;
+      margin-bottom: 24px; font-weight: 600;
+    }
+
+    .btn-draw {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: linear-gradient(135deg, var(--coral), #FF6B9D);
+      color: #fff; border: none; border-radius: 50px;
+      padding: 14px 36px; font-size: 16px; font-weight: 800;
+      cursor: pointer; letter-spacing: 0.5px;
+      box-shadow: 0 6px 20px rgba(255,140,105,0.45), 0 3px 0 rgba(200,80,60,0.3);
+      transition: all 0.2s ease;
+      font-family: inherit;
+    }
+    .btn-draw:hover { transform: translateY(-3px); box-shadow: 0 10px 28px rgba(255,140,105,0.55), 0 3px 0 rgba(200,80,60,0.3); }
+    .btn-draw:active { transform: translateY(0); }
+
+    /* Loading state */
+    .loading-state { display: none; text-align: center; padding: 40px 0; }
+    .loading-state.active { display: block; }
+    .loader-dots { display: flex; justify-content: center; gap: 8px; margin-bottom: 20px; }
+    .loader-dot {
+      width: 12px; height: 12px; border-radius: 50%;
+      animation: dotBounce 1.2s ease-in-out infinite;
+    }
+    .loader-dot:nth-child(1) { background: var(--coral); animation-delay: 0s; }
+    .loader-dot:nth-child(2) { background: var(--mint-dark); animation-delay: 0.2s; }
+    .loader-dot:nth-child(3) { background: var(--lavender-dark); animation-delay: 0.4s; }
+    @keyframes dotBounce {
+      0%, 80%, 100% { transform: scale(0.7); opacity: 0.5; }
+      40% { transform: scale(1.2); opacity: 1; }
+    }
+    .loading-state p { font-size: 14px; color: var(--text-light); font-weight: 700; }
+
+    /* Result state */
+    .result-state { display: none; }
+    .result-state.active { display: block; }
+
+    .card-id-badge {
+      display: inline-flex; align-items: center; gap: 6px;
+      background: var(--yellow);
+      color: var(--brown);
+      border-radius: 20px;
+      padding: 4px 14px;
+      font-size: 13px; font-weight: 800;
+      margin-bottom: 16px;
+      box-shadow: 0 2px 0 rgba(107,78,61,0.15);
+    }
+
+    .card-flip-wrap {
+      perspective: 1000px;
+      width: 200px; height: 280px;
+      margin: 0 auto 20px;
+    }
+    .card-flip-inner {
+      position: relative; width: 100%; height: 100%;
+      transform-style: preserve-3d;
+      transition: transform 0.75s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+    .card-flip-inner.flipped { transform: rotateY(180deg); }
+    .card-face {
+      position: absolute; width: 100%; height: 100%;
+      backface-visibility: hidden; border-radius: 20px; overflow: hidden;
+    }
+    .card-back {
+      background: linear-gradient(145deg, var(--lavender), #C8B8F8);
+      display: flex; align-items: center; justify-content: center;
+      border: 3px solid rgba(255,255,255,0.7);
+      box-shadow: 0 8px 32px rgba(155,133,232,0.3);
+    }
+    .card-back-inner { text-align: center; }
+    .card-back-inner span { font-size: 48px; display: block; margin-bottom: 8px; }
+    .card-back-inner p { font-size: 11px; color: rgba(107,78,61,0.6); font-weight: 800; letter-spacing: 2px; }
+    .card-front {
+      transform: rotateY(180deg);
+      box-shadow: 0 12px 40px rgba(107,78,61,0.2);
+      border: 3px solid var(--yellow);
+    }
+    .card-front img { width: 100%; height: 100%; object-fit: cover; }
+    .card-front .card-loading {
+      width: 100%; height: 100%;
+      display: flex; align-items: center; justify-content: center;
+      background: var(--cream); color: var(--text-light); font-size: 13px;
+    }
+    @keyframes cardShine {
+      0% { box-shadow: 0 12px 40px rgba(107,78,61,0.2), 0 0 0 0 rgba(255,229,102,0.7); }
+      70% { box-shadow: 0 12px 40px rgba(107,78,61,0.2), 0 0 0 16px rgba(255,229,102,0); }
+      100% { box-shadow: 0 12px 40px rgba(107,78,61,0.2), 0 0 0 0 rgba(255,229,102,0); }
+    }
+    .card-front.shining { animation: cardShine 1.2s ease-out 0.8s 3; }
+
+    .result-caption {
+      text-align: center;
+      font-size: 13px; color: var(--text-light); font-weight: 600; line-height: 1.6;
+      margin-bottom: 16px;
+    }
+
+    .btn-redraw {
+      display: inline-flex; align-items: center; gap: 6px;
+      background: transparent;
+      color: var(--text-light);
+      border: 2px solid #E8DDD8;
+      border-radius: 50px;
+      padding: 9px 22px;
+      font-size: 13px; font-weight: 700;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      font-family: inherit;
+    }
+    .btn-redraw:hover { border-color: var(--coral); color: var(--coral); background: rgba(255,140,105,0.06); }
+
+    /* ===== SURVEY PANEL (right) ===== */
+    .survey-panel {
+      background: var(--white);
+      border-radius: 28px;
+      padding: 32px 28px;
+      box-shadow: var(--shadow);
+      border: 2px solid #E8F8EE;
+    }
+
+    .survey-panel-title {
+      font-size: 16px; font-weight: 800; color: var(--text);
+      margin-bottom: 6px;
+      display: flex; align-items: center; gap: 8px;
+    }
+    .survey-subtitle {
+      font-size: 13px; color: var(--text-light); font-weight: 600;
+      line-height: 1.6; margin-bottom: 24px;
+    }
+
+    /* Wait state (before drawing a card) */
+    .survey-wait {
+      text-align: center;
+      padding: 40px 20px;
+    }
+    .survey-wait .wait-icon { font-size: 56px; margin-bottom: 16px; display: block; opacity: 0.6; }
+    .survey-wait p { font-size: 14px; color: var(--text-light); font-weight: 600; line-height: 1.7; }
+
+    /* Form */
+    .survey-form-inner { display: none; }
+    .survey-form-inner.active { display: block; }
+
+    .form-q {
+      margin-bottom: 20px;
+      background: #FAFAFA;
+      border-radius: 16px;
+      padding: 16px 18px;
+      border: 1.5px solid #F0EBEA;
+      transition: border-color 0.2s;
+    }
+    .form-q:focus-within { border-color: var(--mint-dark); }
+
+    .form-q label {
+      display: flex; align-items: flex-start; gap: 8px;
+      font-size: 13px; font-weight: 700; color: var(--text);
+      margin-bottom: 10px; line-height: 1.5;
+    }
+    .q-chip {
+      display: inline-flex; align-items: center; justify-content: center;
+      background: var(--mint);
+      color: var(--brown);
+      border-radius: 8px;
+      padding: 2px 8px;
+      font-size: 11px; font-weight: 800;
+      flex-shrink: 0; margin-top: 1px;
+    }
+    .form-q input[type="text"],
+    .form-q textarea {
+      width: 100%;
+      background: var(--white);
+      border: 1.5px solid #EDE8E6;
+      border-radius: 12px;
+      padding: 10px 13px;
+      color: var(--text);
+      font-size: 14px;
+      font-family: inherit;
+      font-weight: 600;
+      line-height: 1.6;
+      resize: none;
+      outline: none;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+    .form-q input[type="text"]:focus,
+    .form-q textarea:focus {
+      border-color: var(--mint-dark);
+      box-shadow: 0 0 0 3px rgba(109,203,168,0.15);
+    }
+    .form-q input[readonly] {
+      background: #F7F4FF;
+      color: var(--lavender-dark);
+      cursor: default;
+      border-color: var(--lavender);
+    }
+    .form-q input::placeholder,
+    .form-q textarea::placeholder { color: #C5B8B3; font-weight: 600; }
+
+    .btn-submit {
+      width: 100%;
+      background: linear-gradient(135deg, var(--mint-dark), #4DB896);
+      color: #fff; border: none; border-radius: 16px;
+      padding: 15px; font-size: 15px; font-weight: 800;
+      cursor: pointer; letter-spacing: 0.5px;
+      box-shadow: 0 6px 20px rgba(109,203,168,0.4), 0 3px 0 rgba(60,160,110,0.3);
+      transition: all 0.2s ease;
+      font-family: inherit;
+      display: flex; align-items: center; justify-content: center; gap: 8px;
+    }
+    .btn-submit:hover { transform: translateY(-2px); box-shadow: 0 10px 28px rgba(109,203,168,0.5), 0 3px 0 rgba(60,160,110,0.3); }
+    .btn-submit:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+    .submit-note {
+      text-align: center; font-size: 12px; color: var(--text-light);
+      font-weight: 600; margin-top: 10px;
+    }
+
+    /* Success */
+    .submit-success { display: none; text-align: center; padding: 32px 20px; }
+    .submit-success.active { display: block; }
+    .success-badge {
+      display: inline-block;
+      font-size: 60px; margin-bottom: 16px;
+      animation: popIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.5);
+    }
+    @keyframes popIn {
+      0% { transform: scale(0); } 100% { transform: scale(1); }
+    }
+    .submit-success h3 { font-size: 20px; font-weight: 800; color: var(--text); margin-bottom: 8px; }
+    .submit-success p { font-size: 14px; color: var(--text-light); font-weight: 600; line-height: 1.7; }
+
+    /* ===== CONTACT ===== */
+    .contact-strip {
+      margin-top: 24px;
+      background: var(--white);
+      border-radius: 20px;
+      padding: 20px 28px;
+      box-shadow: var(--shadow-sm);
+      border: 2px solid var(--mint);
+      display: flex; align-items: center; gap: 20px;
+      flex-wrap: wrap;
+    }
+    .contact-label {
+      font-size: 13px; font-weight: 800; color: var(--text);
+      flex: 1; min-width: 200px; line-height: 1.5;
+    }
+    .contact-persons { display: flex; gap: 20px; flex-wrap: wrap; }
+    .person {
+      display: flex; align-items: center; gap: 10px;
+      background: var(--cream);
+      border-radius: 12px;
+      padding: 8px 14px;
+    }
+    .person-avatar {
+      width: 32px; height: 32px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 16px; flex-shrink: 0;
+    }
+    .person-avatar.coral { background: var(--peach); }
+    .person-avatar.mint { background: var(--mint); }
+    .person-info { font-size: 13px; }
+    .person-info .p-name { font-weight: 800; color: var(--text); }
+    .person-info .p-loc { font-size: 11px; color: var(--text-light); font-weight: 600; }
+
+    /* Confetti */
+    @keyframes confettiFall {
+      0% { transform: translateY(-20px) rotate(0deg); opacity: 1; }
+      100% { transform: translateY(110vh) rotate(540deg); opacity: 0; }
+    }
+    .confetti-bit { position: fixed; top: -20px; animation: confettiFall linear forwards; z-index: 9999; }
+
+    /* ===== RESPONSIVE ===== */
+    @media (max-width: 768px) {
+      .main-content { grid-template-columns: 1fr; }
+      .card-panel { position: static; }
+      .header h1 { font-size: 30px; }
+      .rules-banner { flex-direction: column; }
+      .contact-strip { flex-direction: column; align-items: flex-start; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Background floaties -->
+  <div class="floaties" id="floaties"></div>
+
+  <!-- Decorative stars -->
+  <div class="deco-star" style="top:8%;left:5%;animation-delay:0s">✦</div>
+  <div class="deco-star" style="top:15%;right:7%;animation-delay:0.8s">✶</div>
+  <div class="deco-star" style="top:45%;left:2%;animation-delay:1.5s;font-size:14px">✷</div>
+  <div class="deco-star" style="top:70%;right:4%;animation-delay:0.4s">✦</div>
+  <div class="deco-star" style="bottom:10%;left:8%;animation-delay:2s;font-size:14px">✸</div>
+
+  <div class="page-wrap">
+
+    <!-- HEADER -->
+    <div class="header">
+      <div class="header-tag">🌊 EAP 心灵活动</div>
+      <h1>心灵卡片的<span>奇幻漂流</span></h1>
+      <p class="sub">在卡片的世界里，探索你的工作心境 🎴</p>
+    </div>
+
+    <!-- RULES BANNER -->
+    <div class="rules-banner">
+      <div class="rules-flow-title">📢 活动流程</div>
+      <div class="rules-flow">
+        <!-- Step 1 -->
+        <div class="flow-step">
+          <div class="flow-icon" style="background:#FFD6B8;">🎴</div>
+          <div class="flow-num">STEP 1</div>
+          <div class="flow-label">抽取心灵卡片</div>
+          <div class="flow-desc">从85张中随机抽一张<br>代表你的工作状态</div>
+        </div>
+        <!-- Arrow -->
+        <div class="flow-arrow">→</div>
+        <!-- Step 2 -->
+        <div class="flow-step">
+          <div class="flow-icon" style="background:#B8EDD6;">📝</div>
+          <div class="flow-num">STEP 2</div>
+          <div class="flow-label">填写互动问题</div>
+          <div class="flow-desc">用卡片描述你的<br>工作感受与状态</div>
+        </div>
+        <!-- Arrow -->
+        <div class="flow-arrow">→</div>
+        <!-- Step 3 -->
+        <div class="flow-step">
+          <div class="flow-icon" style="background:#D4C5F9;">🎁</div>
+          <div class="flow-num">STEP 3</div>
+          <div class="flow-label">提交参与抽奖</div>
+          <div class="flow-desc">抽取10位幸运伙伴<br>截止 <strong>4月15日</strong></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- MAIN 2-COL -->
+    <div class="main-content">
+
+      <!-- LEFT: Card drawing -->
+      <div class="card-panel">
+        <div class="card-panel-title">🎴 心灵卡片抽取</div>
+
+        <!-- Initial -->
+        <div class="initial-state" id="initialState">
+          <div class="deck-visual">
+            <div class="deck-card"></div>
+            <div class="deck-card"></div>
+            <div class="deck-card">🌸</div>
+          </div>
+          <p>共 85 张心灵卡片<br>每一张都在等待与你相遇</p>
+          <button class="btn-draw" onclick="drawCard()">✨ 开始抽卡</button>
+        </div>
+
+        <!-- Loading -->
+        <div class="loading-state" id="loadingState">
+          <div class="loader-dots">
+            <div class="loader-dot"></div>
+            <div class="loader-dot"></div>
+            <div class="loader-dot"></div>
+          </div>
+          <p>正在为你寻找专属卡片...</p>
+        </div>
+
+        <!-- Result -->
+        <div class="result-state" id="resultState">
+          <div style="text-align:center;margin-bottom:16px">
+            <span class="card-id-badge">🏷 <span id="cardNumber">OH-001</span></span>
+          </div>
+          <div class="card-flip-wrap">
+            <div class="card-flip-inner" id="cardFlipInner">
+              <div class="card-face card-back">
+                <div class="card-back-inner">
+                  <span>🌿</span>
+                  <p>OH CARDS</p>
+                </div>
+              </div>
+              <div class="card-face card-front" id="cardFront">
+                <div class="card-loading">加载中...</div>
+              </div>
+            </div>
+          </div>
+          <p class="result-caption">这张卡片与你此刻的心境相遇了<br>感受一下，它想说什么？</p>
+          <div style="text-align:center">
+            <button class="btn-redraw" onclick="redrawCard()">↺ 重新抽一张</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- RIGHT: Survey form -->
+      <div class="survey-panel">
+        <div class="survey-panel-title">📝 互动问题</div>
+        <p class="survey-subtitle">仔细感受抽到的卡片，用它代表你当下的工作状态，回答以下问题</p>
+
+        <!-- Wait hint -->
+        <div class="survey-wait" id="surveyWait">
+          <span class="wait-icon">👈</span>
+          <p>先在左侧抽一张卡片吧<br>抽卡后这里会自动解锁~</p>
+        </div>
+
+        <!-- Form (hidden until card drawn) -->
+        <div class="survey-form-inner" id="surveyFormInner">
+          <div class="form-q">
+            <label>
+              <span class="q-chip">Q1</span>
+              你抽到的卡片编号是
+            </label>
+            <input type="text" id="q1" readonly placeholder="抽卡后自动填写">
+          </div>
+
+          <div class="form-q">
+            <label>
+              <span class="q-chip">Q2</span>
+              如果这张卡代表你的工作状态，请用 2-3 句话描述它是什么样的
+            </label>
+            <textarea id="q2" rows="3" placeholder="写下你的感受..."></textarea>
+          </div>
+
+          <div class="form-q">
+            <label>
+              <span class="q-chip">Q3</span>
+              这样的工作状态会让你有什么感受？
+            </label>
+            <textarea id="q3" rows="3" placeholder="写下你的感受..."></textarea>
+          </div>
+
+          <div class="form-q">
+            <label>
+              <span class="q-chip">Q4</span>
+              这样的感受会对你产生什么影响吗？
+            </label>
+            <textarea id="q4" rows="3" placeholder="写下你的感受..."></textarea>
+          </div>
+
+          <button class="btn-submit" id="btnSubmit" onclick="submitSurvey()">
+            🎉 提交参与抽奖
+          </button>
+          <p class="submit-note">提交即参与抽奖，截止 4月15日</p>
+        </div>
+
+        <!-- Success -->
+        <div class="submit-success" id="submitSuccess">
+          <span class="success-badge">🎊</span>
+          <h3>已成功提交！</h3>
+          <p>感谢你的参与 💚<br>截止 4月15日开奖<br>祝你好运！🌟</p>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- CONTACT -->
+    <div class="contact-strip">
+      <div class="contact-label">💬 想深入探索心灵卡片？<br>欢迎联系 EAP 心理咨询师线下体验</div>
+      <div class="contact-persons">
+        <div class="person">
+          <div class="person-avatar coral">🌸</div>
+          <div class="person-info">
+            <div class="p-name">武健</div>
+            <div class="p-loc">成都 · @cd-wujian</div>
+          </div>
+        </div>
+        <div class="person">
+          <div class="person-avatar mint">🌿</div>
+          <div class="person-info">
+            <div class="p-name">刘楚楚</div>
+            <div class="p-loc">无锡/淮安 · @wuxi-liuchuchu</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /page-wrap -->
+
+  <script>
+    const ohCards = Array.from({length: 85}, (_, i) => ({
+      id: `OH-${String(i+1).padStart(3,'0')}`,
+      url: `images/OH-${String(i+1).padStart(3,'0')}.jpg`
+    }));
+
+    // ---- Background floaties ----
+    (function() {
+      const wrap = document.getElementById('floaties');
+      const colors = ['#FFD6B8','#D4C5F9','#B8EDD6','#BDE8FF','#FFE566','#FFC8D4'];
+      for (let i = 0; i < 14; i++) {
+        const el = document.createElement('div');
+        el.className = 'floaty';
+        const s = 30 + Math.random() * 60;
+        el.style.cssText = `
+          left:${Math.random()*100}%;
+          width:${s}px; height:${s}px;
+          background:${colors[i % colors.length]};
+          animation-duration:${14+Math.random()*16}s;
+          animation-delay:${Math.random()*10}s;
+        `;
+        wrap.appendChild(el);
+      }
+    })();
+
+    // ---- Confetti ----
+    function launchConfetti() {
+      const colors = ['#FFE566','#FF8C69','#6DCBA8','#C8B8F8','#FF6B9D','#7DD3F8','#FFD6B8'];
+      for (let i = 0; i < 55; i++) {
+        const el = document.createElement('div');
+        el.className = 'confetti-bit';
+        const s = 7 + Math.random() * 10;
+        el.style.cssText = `
+          left:${Math.random()*100}vw;
+          width:${s}px; height:${s}px;
+          background:${colors[Math.floor(Math.random()*colors.length)]};
+          border-radius:${Math.random()>0.5?'50%':'3px'};
+          animation-duration:${1.8+Math.random()*1.8}s;
+          animation-delay:${Math.random()*0.6}s;
+        `;
+        document.body.appendChild(el);
+        setTimeout(() => el.remove(), 4000);
+      }
+    }
+
+    // ---- Draw card ----
+    function drawCard() {
+      document.getElementById('initialState').style.display = 'none';
+      document.getElementById('loadingState').classList.add('active');
+      document.getElementById('resultState').classList.remove('active');
+      document.getElementById('cardFlipInner').classList.remove('flipped');
+
+      const card = ohCards[Math.floor(Math.random() * ohCards.length)];
+
+      setTimeout(() => {
+        document.getElementById('cardNumber').textContent = card.id;
+        document.getElementById('q1').value = card.id;
+
+        // Unlock form
+        document.getElementById('surveyWait').style.display = 'none';
+        document.getElementById('surveyFormInner').classList.add('active');
+        document.getElementById('submitSuccess').classList.remove('active');
+        document.getElementById('btnSubmit').disabled = false;
+        document.getElementById('btnSubmit').innerHTML = '🎉 提交参与抽奖';
+        document.getElementById('q2').value = '';
+        document.getElementById('q3').value = '';
+        document.getElementById('q4').value = '';
+
+        const cardFront = document.getElementById('cardFront');
+        cardFront.innerHTML = '<div class="card-loading">加载中...</div>';
+        cardFront.classList.remove('shining');
+
+        const img = new Image();
+        img.onload = () => {
+          cardFront.innerHTML = '';
+          cardFront.appendChild(img);
+          Object.assign(img.style, {width:'100%',height:'100%',objectFit:'cover'});
+          doFlip(cardFront);
+        };
+        img.onerror = () => {
+          cardFront.innerHTML = `<div class="card-loading" style="flex-direction:column;gap:8px;background:#FFF8F0"><span style="font-size:36px">🎴</span><span style="color:#8B7066;font-size:13px;font-weight:700">${card.id}</span></div>`;
+          doFlip(cardFront);
+        };
+        img.src = card.url;
+
+        document.getElementById('loadingState').classList.remove('active');
+        document.getElementById('resultState').classList.add('active');
+      }, 1400);
+    }
+
+    function doFlip(cardFront) {
+      setTimeout(() => {
+        document.getElementById('cardFlipInner').classList.add('flipped');
+        setTimeout(() => { cardFront.classList.add('shining'); launchConfetti(); }, 750);
+      }, 200);
+    }
+
+    function redrawCard() {
+      document.getElementById('cardFlipInner').classList.remove('flipped');
+      setTimeout(() => {
+        document.getElementById('resultState').classList.remove('active');
+        document.getElementById('initialState').style.display = 'block';
+      }, 350);
+    }
+
+    // ---- Submit ----
+    async function submitSurvey() {
+      const q2 = document.getElementById('q2').value.trim();
+      const q3 = document.getElementById('q3').value.trim();
+      const q4 = document.getElementById('q4').value.trim();
+      const cardId = document.getElementById('q1').value;
+
+      if (!q2 || !q3 || !q4) {
+        alert('请填写全部问题后再提交 😊');
+        return;
+      }
+
+      const btn = document.getElementById('btnSubmit');
+      btn.disabled = true;
+      btn.innerHTML = '提交中...';
+
+      const payload = {
+        formData: {
+          "i8zm23nl7fszqfm": { value: `<p>${cardId}</p>` },
+          "tc7zudk9gyvlczz": { value: `<p>${q2.replace(/\n/g,'</p><p>')}</p>` },
+          "ghpstznzvl56m5z": { value: `<p>${q3.replace(/\n/g,'</p><p>')}</p>` },
+          "aybg4t15nl3i1wr": { value: `<p>${q4.replace(/\n/g,'</p><p>')}</p>` }
+        },
+        formKey: "kpx6rbfd",
+        formVersion: 0,
+        id: String(Date.now()) + String(Math.floor(Math.random() * 9999)).padStart(4,'0')
+      };
+
+      try {
+        const res = await fetch('https://survey.corp.kuaishou.com/ks-quickform-be/api/v1/client/formData/submit', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          credentials: 'include',
+          body: JSON.stringify(payload)
+        });
+        const data = await res.json();
+
+        if (data.code === '000000') {
+          document.getElementById('surveyFormInner').style.display = 'none';
+          document.getElementById('submitSuccess').classList.add('active');
+          launchConfetti();
+        } else {
+          btn.disabled = false;
+          btn.innerHTML = '🎉 提交参与抽奖';
+          alert('提交遇到问题，请稍后重试。\n' + (data.msg?.zh || JSON.stringify(data)));
+        }
+      } catch (e) {
+        btn.disabled = false;
+        btn.innerHTML = '🎉 提交参与抽奖';
+        alert('网络异常，请确认已登录内网后重试 🙏');
+      }
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,1 @@
+cd "/Users/kwai/Documents/网站开发/OH卡抽取活动" && python3 -m http.server 8080
